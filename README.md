@@ -21,6 +21,16 @@ fuck.off(name: "Friend", from: "You", completion: { (response, error)
     print(response.message)
     print(response.subtitle)
 })
+
+fuck.random(name: "Friend", from: "You") { (response, error) in
+    if let error = error {
+        print(error)
+        return
+    }
+    guard let response = response else { return }
+    print(response.message)
+    print(response.subtitle)
+}
 ```
 
 ### License
