@@ -18,10 +18,10 @@ class TableViewController: UITableViewController {
         
         self.title = "All Operations"
         
-        fuck.fetchAllOperations { (operations, error) in
-            self.operations = operations
+        fuck.fetchAllOperations { [weak self] (operations, error) in
+            self?.operations = operations
             DispatchQueue.main.async {
-                self.tableView.reloadData()
+                self?.tableView.reloadData()
             }
         }
     }
@@ -94,7 +94,7 @@ class TableViewController: UITableViewController {
                 newURLString = newURLString.replacingOccurrences(of: ":\(field3.field)", with: textField3.text ?? "noname", options: .literal, range: nil)
                 newURLString = self.fuck.baseURLString + newURLString
                 if let newURL = URL(string: newURLString) {
-                    self.fuck.fetchResponse(url: newURL, completion: { (response, error) in
+                    self.fuck.fetchResponse(url: newURL, completion: { [weak self] (response, error) in
                         if let error = error {
                             print(error)
                             return
@@ -125,13 +125,13 @@ class TableViewController: UITableViewController {
                     newURLString = newURLString.replacingOccurrences(of: ":\(field2.field)", with: textField2.text ?? "noname", options: .literal, range: nil)
                     newURLString = self.fuck.baseURLString + newURLString
                     if let newURL = URL(string: newURLString) {
-                        self.fuck.fetchResponse(url: newURL, completion: { (response, error) in
+                        self.fuck.fetchResponse(url: newURL, completion: { [weak self] (response, error) in
                             if let error = error {
                                 print(error)
                                 return
                             }
                             if let response = response {
-                                self.showResponse(response: response)
+                                self?.showResponse(response: response)
                             } else {
                                 print("error")
                             }
@@ -151,13 +151,13 @@ class TableViewController: UITableViewController {
                     var newURLString = operation.url.relativePath.replacingOccurrences(of: ":\(field1.field)", with: textField1.text ?? "noname", options: String.CompareOptions.literal, range: nil)
                     newURLString = self.fuck.baseURLString + newURLString
                     if let newURL = URL(string: newURLString) {
-                        self.fuck.fetchResponse(url: newURL, completion: { (response, error) in
+                        self.fuck.fetchResponse(url: newURL, completion: { [weak self] (response, error) in
                             if let error = error {
                                 print(error)
                                 return
                             }
                             if let response = response {
-                                self.showResponse(response: response)
+                                self?.showResponse(response: response)
                             } else {
                                 print("error")
                             }
@@ -171,7 +171,7 @@ class TableViewController: UITableViewController {
     }
     
     private func showResponse(response: FOAASResponse) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { // guarantee we are on the main queue so we can interact with UIKit
             let alert = UIAlertController(title: response.message, message: response.subtitle, preferredStyle: .alert)
             let okAction = UIAlertAction(title: "Alright", style: .default) { (alert) in
                 
